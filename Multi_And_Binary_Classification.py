@@ -47,6 +47,7 @@ X_test_processed = preprocessor.transform(X_test)
 
 # Dictionary to store results
 results = []
+confusion_matrix_result = [];
 
 # SVM models
 svm_kernels = ["linear", "rbf"]
@@ -55,6 +56,8 @@ for kernel in svm_kernels:
     model.fit(X_train_processed, y_train)
     y_pred = model.predict(X_test_processed)
     acc = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+    confusion_matrix_result.append({"Model": f"SVM ({kernel})", "confusion_matrix": cm});
     results.append({"Model": f"SVM ({kernel})", "Accuracy": acc})
 
 # KNN models
@@ -64,6 +67,8 @@ for k in knn_neighbors:
     model.fit(X_train_processed, y_train)
     y_pred = model.predict(X_test_processed)
     acc = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+    confusion_matrix_result.append({"Model": f"KNN (k={k})", "confusion_matrix": cm});
     results.append({"Model": f"KNN (k={k})", "Accuracy": acc})
 
 # Decision Tree
@@ -71,6 +76,8 @@ dt_model = DecisionTreeClassifier(random_state=42)
 dt_model.fit(X_train_processed, y_train)
 y_pred = dt_model.predict(X_test_processed)
 acc = accuracy_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+confusion_matrix_result.append({"Model": "Decision Tree", "confusion_matrix": cm});
 results.append({"Model": "Decision Tree", "Accuracy": acc})
 
 # Create results table
@@ -80,6 +87,8 @@ results_df = results_df.sort_values(by="Accuracy", ascending=False).reset_index(
 print("\n=== Model Accuracy Summary ===")
 print(results_df)
 
+
+print(confusion_matrix_result)
 # # Building the pipeline with SVM with linear kernel
 # pipeline_SVM_linear = Pipeline([("preprocessor",preprocessor), ("classifier", SVC(kernel="linear"))]);
 
